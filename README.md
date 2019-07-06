@@ -25,7 +25,7 @@ export(PACKAGE ${PROJECT_NAME})
 ```
 The command above creates a default cmake config file which can then be used by other packages to call `find_package()`.
 This allows to then link against the imported targets as such:
-```
+```cmake
 find_package(project_a_headers 0.0.1 REQUIRED)
 ...
 target_link_libraries(
