@@ -5,17 +5,17 @@ demo examples with three plain cmake packages
 
 Modern CMake allows to easily handle properties such as include directories or linked libraries on a target level.
 For example setting the include directories on a target.
-```
-   target_include_directories(
-  project_a_header_lib
-  INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include/>
+```cmake
+target_include_directories(
+project_a_header_lib
+INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/>
 )
 ```
 
 The libraries can then be easily exported as follows:
-```
+```cmake
 export(
   EXPORT export_${PROJECT_NAME}
   NAMESPACE ${PROJECT_NAME}::
@@ -38,7 +38,7 @@ However, things get complicated and non-straightforward if trying to transitivel
 In this case, we still (unfortunately) have to write our own cmake config file.
 Luckily, there is a way to minimize efforts:
 First, we would export our targets as always, just with a little twist:
-```
+```cmake
 export(
   EXPORT export_${PROJECT_NAME}
   NAMESPACE ${PROJECT_NAME}::
@@ -48,13 +48,13 @@ export(PACKAGE ${PROJECT_NAME})
 ```
 I chose a `_` prefix for the config file to mark it somewhat as private.
 Next, we have to write a small config file which finds our target dependencies first and then call the private cmake config file.
-```
-   include(CMakeFindDependencyMacro)
+```cmake
+include(CMakeFindDependencyMacro)
 find_dependency(project_a_headers 0.0.1 REQUIRED)
 include("${CMAKE_CURRENT_LIST_DIR}/_@PROJECT_NAME@Config.cmake")
 ```
 In our top-level cmake, we have to configure this file appropriately.
-```
+```cmake
 configure_package_config_file(
   ${CMAKE_CURRENT_LIST_DIR}/cmake/project_aConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/project_aConfig.cmake
