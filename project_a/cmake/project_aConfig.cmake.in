@@ -1,3 +1,3 @@
 include(CMakeFindDependencyMacro)
 find_dependency(project_a_headers 0.0.1 REQUIRED)
-include("${CMAKE_CURRENT_LIST_DIR}/_@PROJECT_NAME@Config.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/export_@PROJECT_NAME@.cmake")

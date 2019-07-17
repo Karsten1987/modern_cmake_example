@@ -2,13 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 set(project_a_headersVERSION 0.0.1)
 project(project_a_headers VERSION ${project_a_headersVERSION})
 
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-  VERSION ${PROJECT_VERSION}
-  COMPATIBILITY SameMajorVersion
-)
-
 # mark the library as header only with INTERFACE
 add_library(
   project_a_header_lib
@@ -30,16 +23,28 @@ install(
   ARCHIVE DESTINATION lib
   INCLUDES DESTINATION include
 )
+
 install(
-  EXPORT export_${PROJECT_NAME}
-  DESTINATION "share/${PROJECT_NAME}/cmake"
-  NAMESPACE ${PROJECT_NAME}::
+  DIRECTORY include/
+  DESTINATION include
 )
 
 # export the libraries and register the package
-export(
+# use shortcut by directly installing the exported target file as *Config.cmake
+install(
   EXPORT export_${PROJECT_NAME}
   NAMESPACE ${PROJECT_NAME}::
-  FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  DESTINATION "share/${PROJECT_NAME}/cmake"
+  FILE ${PROJECT_NAME}Config.cmake
 )
-export(PACKAGE ${PROJECT_NAME})
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion
+)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  DESTINATION share/${PROJECT_NAME}/cmake
+)
