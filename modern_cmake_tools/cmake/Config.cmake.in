@@ -1,0 +1,14 @@
+# this config file is generated from modern_cmake_tools/cmake/Config.cmake.in
+
+# find dependencies
+include(CMakeFindDependencyMacro)
+list(APPEND @PROJECT_NAME@_dependencies @PROJECT_DEPENDENCIES@)
+foreach(dependency ${@PROJECT_NAME@_dependencies})
+  find_dependency(${dependency} REQUIRED)
+endforeach()
+
+# include the export set
+set(@PROJECT_NAME@_EXPORT_SET_CONFIG ${CMAKE_CURRENT_LIST_DIR}/export_@PROJECT_NAME@.cmake)
+if(EXISTS "${@PROJECT_NAME@_EXPORT_SET_CONFIG}")
+  include("${@PROJECT_NAME@_EXPORT_SET_CONFIG}")
+endif()

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.5)
 set(project_b_VERSION 0.0.1)
 project(project_b VERSION ${project_b_VERSION})
 
+find_package(modern_cmake_tools REQUIRED)
+
 # find package brings transitive dependencies of project_a_headers
 find_package(project_a 0.0.1 REQUIRED)
 add_library(
@@ -39,26 +41,13 @@ install(
 )
 install(
   TARGETS project_b_library project_b
-  EXPORT export_${PROJECT_NAME}
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   INCLUDES DESTINATION include
 )
-install(
-  EXPORT export_${PROJECT_NAME}
-  NAMESPACE ${PROJECT_NAME}::
-  DESTINATION "share/${PROJECT_NAME}/cmake"
-)
 
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-  VERSION ${PROJECT_VERSION}
-  COMPATIBILITY SameMajorVersion
+tools_export_package(
+  TARGETS project_b_library
+  DEPENDENCIES project_a
 )
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-  DESTINATION share/${PROJECT_NAME}/cmake
-)
-
